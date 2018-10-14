@@ -2,11 +2,6 @@
 # .bashrc
 ##############################################################################
 
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
-fi
-
 # OS Specific Settings
 OSKERNELNAME="$(uname -s)"
 
@@ -18,7 +13,12 @@ fi
 if [[ $OSKERNELNAME == "Linux" ]]
 then
     CA_BUNDLE="/etc/pki/tls/certs/ca-bundle.crt"
-    BASH_COMPLETION_D="/usr/share/doc/git/contrib/completion"
+    GIT_DOC_DIR="/usr/share/doc/git"
+    if [[ ! -d $GIT_DOC_DIR && ! -L $GIT_DOC_DIR ]]
+    then
+        GIT_DOC_DIR="$(ls -1rtd ${GIT_DOC_DIR}* | head -1)"
+    fi
+    BASH_COMPLETION_D="$GIT_DOC_DIR/contrib/completion"
 fi
 
 # Bash completions
@@ -41,6 +41,9 @@ then
     . $HOME/.bashrc_local
 fi
 
+# Bash Options
+# shopt -s checkwinsize
+
 # Aliases
 alias vir='rmate'
 alias grep='grep --color=auto'
@@ -55,5 +58,5 @@ export LESS='-C -M -I -j10 -#4 -R'
 
 # Export any modified variables
 export PATH
+export PROMPT_COMMAND='printf "\033]0;%s:%s\007" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
 export PS1='\h:\w$(__git_ps1)\$ ' 
-
