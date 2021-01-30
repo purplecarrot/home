@@ -28,26 +28,22 @@ fi
 # Show Git state in PS1
 GIT_PS1_SHOWDIRTYSTATE=true
 GIT_PS1_SHOWCOLORHINTS=true
+GIT_PS1_SHOWCOLORHINTS=true
 
-# Add local bin directory to PATH
-if [[ -d $HOME/bin ]]
-then
-    PATH=$HOME/bin:$PATH
-fi
+# Add additonal bin directories to PATH
+for BINDIR in "$HOME/bin $HOME/.local/bin /usr/local/bin"
+do
+    if [[ -d $BINDIR ]]
+    then
+        PATH=$HOME/bin:$BINDIR
+    fi
+done
 
-# Source local .bashrc
-if [[ -f $HOME/.bashrc_local ]]
-then
-    . $HOME/.bashrc_local
-fi
-
-# Bash Options
-# shopt -s checkwinsize
 
 # Aliases
 alias vir='rmate'
 alias grep='grep --color=auto'
-alias githome="/usr/bin/git --git-dir=$HOME/.githome/ --work-tree=$HOME"
+alias ls='ls --color=auto'
 
 # Environment Variables
 export EDITOR="vim"
@@ -58,5 +54,10 @@ export LESS='-C -M -I -j10 -#4 -R'
 
 # Export any modified variables
 export PATH
-export PROMPT_COMMAND='printf "\033]0;%s:%s\007" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-export PS1='\h:\w$(__git_ps1)\$ ' 
+export PROMPT_COMMAND='__git_ps1 "\h:\w" "\$ "'
+
+# Source local .bashrc
+if [[ -f $HOME/.bashrc_local ]]
+then
+    . $HOME/.bashrc_local
+fi
