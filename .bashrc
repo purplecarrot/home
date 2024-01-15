@@ -43,7 +43,7 @@ do
     then
         if [[ -d $BIN_DIR ]]
         then
-            PATH=$PATH:$BIN_DIR
+            PATH=$BIN_DIR:$PATH
         fi
     fi
 done
