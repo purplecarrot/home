@@ -1,5 +1,5 @@
 ##############################################################################
-# .bashrc
+# Mark's .bashrc
 ##############################################################################
 
 # OS Specific Settings
@@ -7,7 +7,8 @@ OSKERNELNAME="$(uname -s)"
 
 if [[ $OSKERNELNAME == "Darwin" ]]
 then
-    BASH_COMPLETION_D="/usr/local/etc/bash_completion.d"
+    BASH_COMPLETION_D="/opt/homebrew/etc/bash_completion.d"
+    export CLICOLOR=1
 fi
 
 if [[ $OSKERNELNAME == "Linux" ]]
@@ -22,8 +23,11 @@ then
 fi
 
 # Bash completions
-. $BASH_COMPLETION_D/git-completion.bash
-. $BASH_COMPLETION_D/git-prompt.sh
+if [[ -d $BASH_COMPLETION_D ]]
+then
+    . $BASH_COMPLETION_D/git-completion.bash
+    . $BASH_COMPLETION_D/git-prompt.sh
+fi
 
 # Show Git state in PS1
 GIT_PS1_SHOWDIRTYSTATE=true
@@ -31,11 +35,15 @@ GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWCOLORHINTS=true
 
 # Add additonal bin directories to PATH
-for BINDIR in "$HOME/bin $HOME/.local/bin /usr/local/bin"
+BIN_DIRS="$HOME/bin $HOME/.local/bin $HOME/go/bin /opt/homebrew/bin /usr/local/bin"
+for BIN_DIR in $BIN_DIRS 
 do
-    if [[ -d $BINDIR ]]
+    if [[ ! $PATH =~ $BIN_DIR ]]
     then
-        PATH=$HOME/bin:$BINDIR
+        if [[ -d $BIN_DIR ]]
+        then
+            PATH=$PATH:$BIN_DIR
+        fi
     fi
 done
 
@@ -51,6 +59,7 @@ export GIT_EDITOR="vim"
 export TMOUT=0
 export SYSTEMD_PAGER=
 export LESS='-C -M -I -j10 -#4 -R'
+export PATH
 
 # Export any modified variables
 export PATH
