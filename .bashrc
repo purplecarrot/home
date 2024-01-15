@@ -22,17 +22,18 @@ then
     BASH_COMPLETION_D="$GIT_DOC_DIR/contrib/completion"
 fi
 
-# Bash completions
+# Bash Completion Directories
 if [[ -d $BASH_COMPLETION_D ]]
 then
     . $BASH_COMPLETION_D/git-completion.bash
     . $BASH_COMPLETION_D/git-prompt.sh
-fi
 
-# Show Git state in PS1
-GIT_PS1_SHOWDIRTYSTATE=true
-GIT_PS1_SHOWCOLORHINTS=true
-GIT_PS1_SHOWCOLORHINTS=true
+    # Show Git state in PS1
+    export GIT_PS1_SHOWDIRTYSTATE=true
+    export GIT_PS1_SHOWCOLORHINTS=true
+    export GIT_PS1_SHOWUPSTREAM=verbose
+    export GIT_PS1_SHOWUNTRACKEDFILES=true
+fi
 
 # Add additonal bin directories to PATH
 BIN_DIRS="$HOME/bin $HOME/.local/bin $HOME/go/bin /opt/homebrew/bin /usr/local/bin"
@@ -46,6 +47,7 @@ do
         fi
     fi
 done
+export PATH
 
 
 # Aliases
@@ -59,10 +61,8 @@ export GIT_EDITOR="vim"
 export TMOUT=0
 export SYSTEMD_PAGER=
 export LESS='-C -M -I -j10 -#4 -R'
-export PATH
 
 # Export any modified variables
-export PATH
 export PROMPT_COMMAND='__git_ps1 "\h:\w" "\$ "'
 
 # Source local .bashrc
