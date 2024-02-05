@@ -49,13 +49,14 @@ do
 done
 export PATH
 
-
 # Aliases
+alias vi='vim'
 alias vir='rmate'
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 
 # Environment Variables
+export SHELL=/bin/bash
 export EDITOR="vim"
 export GIT_EDITOR="vim"
 export TMOUT=0
