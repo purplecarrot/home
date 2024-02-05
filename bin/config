@@ -1,0 +1,76 @@
+#!/bin/bash
+# Configure Environment 
+
+
+# Default Git Configuration
+git() {
+    GIT=$(which git)
+    GITUSERNAME=$($GIT config --get user.name)
+    if [[ $GITUSERNAME != *"Mark"* ]]
+    then
+        echo "Git appears to be already configured. Apply standard config anyway"
+    fi 
+
+    $GIT config --global user.name "Mark"
+    $GIT config --global user.email mark@purplecarrot.co.uk
+    $GIT config --global core.editor vim
+    $GIT config --global core.ui true
+    $GIT config --global alias.last 'log -1 HEAD -p'
+    $GIT config --global push.default current
+    $GIT config --global pull.ff only
+
+    echo "Current Git Configuration"
+    $GIT --no-pager config --list
+}
+
+# SSH files no longer in git
+ssh() {
+    if [[ ! -d $HOME/.ssh ]]
+    then
+        mkdir -p $HOME/.ssh 
+        chmod 700 $HOME/.ssh
+    fi
+
+    ls -l $HOME/.ssh
+}
+
+
+# Setup home directory sym links
+homedir() {
+    if [[ ! -d $HOME/git/home ]]
+    then
+        echo "Config needs home.git repo cloned to \$HOME/git/home"
+        exit 1 
+    fi
+   
+    for FILE in .bashrc .bash_profile .vimrc .bashrc .tmux.conf .bin
+    do
+        if [[ -L $HOME/$FILE ]]
+        then
+            echo "$HOME/$FILE is already a symlink to copy in git"
+        else
+            if [[ -f $HOME/$FILE ]]
+            then
+                echo "Moving $FILE to $HOME/$FILE.orig"
+                mv $HOME/$FILE $HOME/$FILE.orig
+            fi
+            echo "Creating symlink $FILE -> $HOME/$FILE"
+            ln -s $HOME/git/home/$FILE $HOME/$FILE
+        fi
+    done
+
+}
+
+# Default usage is list of functions within script
+OPTIONS=$(compgen -A function | egrep -v "^_" | paste -sd '|' -)
+if [[ -n $1 && $OPTIONS =~ $1 ]]
+then
+    CMD=$1
+    shift
+    echo -e "Configuring $CMD...\n"
+    $CMD $*
+    exit 2
+else
+    echo "usage: $0 [$OPTIONS]"
+    exit 1
+fi
